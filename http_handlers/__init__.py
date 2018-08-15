@@ -1,0 +1,4 @@
+from http_handlers.last_position import LastPositionHTTPHandler
+from http_handlers.employee import EmployeeHTTPHandler
+from http_handlers.generator import GeneratorHTTPHandler
+from http_handlers.moving import MovingHTTPHandler
