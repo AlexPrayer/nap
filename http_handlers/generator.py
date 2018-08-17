@@ -21,8 +21,8 @@ class GeneratorHTTPHandler(MethodView):
             'user',
             'date_from',
             'date_to',
-            'lat',
-            'long',
+            'latitude',
+            'longtitude',
         }
         data = request.get_data()
         try:
@@ -35,7 +35,7 @@ class GeneratorHTTPHandler(MethodView):
         if not all(field in data for field in required_fields):
             return Response(
                 response='Not enough params to create user.'
-                         ' Set params <id>, <date_from>, <date_to>, <lat> and <long> to the request\'s body.',
+                         ' Set params <id>, <date_from>, <date_to>, <latitude> and <longtitude> to the request\'s body.',
                 status=400)
         try:
             date_from = datetime.datetime.strptime(data['date_from'], '%Y/%m/%d_%H:%M:%S')
@@ -45,22 +45,22 @@ class GeneratorHTTPHandler(MethodView):
             return Response(response='Error during formatting dates.', status=400)
 
         try:
-            lat = Decimal(data['lat'])
-            long = Decimal(data['long'])
+            latitude = Decimal(data['lat'])
+            longtitude = Decimal(data['long'])
         except TypeError as t:
-            log.error('Error during converting lat/long from String to Decimal. Exception: %s.'
+            log.error('Error during converting latitude/longtitude from String to Decimal. Exception: %s.'
                       % traceback.format_exc(str(t)))
-            return Response(response='Error during converting lat/long from String to Decimal.', status=400)
+            return Response(response='Error during converting latitude/longtitude from String to Decimal.', status=400)
 
         rows = []
         for single_date in self._generate_daterange(date_from, date_to):     # Use generator to iterate via dates.
             x_axis, y_axis = self._generate_coordinates()
-            long += x_axis
-            lat += y_axis
+            longtitude += x_axis
+            latitude += y_axis
             rows.append({
                 'user': data['user'],
-                'lat': lat,
-                'long': long,
+                'latitude': latitude,
+                'longtitude': longtitude,
                 'date': single_date,
             })
         try:
